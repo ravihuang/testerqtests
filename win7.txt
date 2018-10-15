@@ -1,0 +1,5 @@
+﻿-v 
+IP:192.168.164.144 
+-x win7-junit-result.xml
+--suite
+Web.订单模块

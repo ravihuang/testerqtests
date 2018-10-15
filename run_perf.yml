@@ -1,0 +1,27 @@
+modules:
+  jmeter:
+    path: E:/advanced/apache-jmeter-5.0/bin/jmeter.bat
+  console:
+    disable: true
+
+execution:
+- concurrency: 1
+  iterations: 1
+ distributed: 
+  - 192.168.164.144
+  scenario: rest
+  
+scenarios:
+  rest:
+    script: rest/接口测试.jmx
+    modifications:                                                                                                                                                                                                                           
+      #disable:                                                                                                                                                                                                                               
+      #  - "任务模块"                                                                                                                                                                                                                  
+      enable:
+        - "订单模块"
+        - "任务模块" 
+reporting:
+- module: junit-xml
+  filename: junit-result.xml
+- module: final-stats
+  dump-xml: stats.xml

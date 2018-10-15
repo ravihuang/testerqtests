@@ -1,0 +1,6 @@
+﻿-v 
+IP:192.168.164.144 
+-x 
+master-junit-result.xml
+--suite
+Web.Hellosuite

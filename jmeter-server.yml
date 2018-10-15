@@ -1,0 +1,13 @@
+version: "3"
+services:
+  jmeter:
+    environment:
+      - "HEAP=-Xms1g -Xmx4g -XX:MaxMetaspaceSize=256m"
+      - "GC_ALGO=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:G1ReservePercent=20"
+    container_name: jmeter
+    image: ${REPO:-docker.io}/testerq/jmeter
+    restart: always
+    network_mode: host
+    volumes:
+      - "https.p12:/conf/https.p12"  
+#    command: jmeter-server -Jserver.rmi.localport=60000 -Djava.rmi.server.hostname=jmeter.server -Djavax.net.ssl.keyStorePassword=changeit

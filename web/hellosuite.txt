@@ -1,0 +1,46 @@
+*** Settings ***
+Test Timeout      5 seconds
+Library           lib/mylib.py
+Variables         lib/vars.py
+Library           DateTime
+Library           CSVLibrary
+
+*** Test Cases ***
+Case-01
+    [Setup]    log    case setup
+    log    hello world!
+    ${x}    Set Variable    10    # 设置变量x的值为字符串10
+    ${y}    Set Variable    ${10}    # 设置变量y的值为数值10
+    log    ${x}
+    ${l}    Create List    a    b    c    # ['a','b','c']
+    : FOR    ${i}    IN    @{l}    # for循环遍历列表
+    \    log    ${i}
+    ${d}    Create Dictionary    china=中国    usa=美国
+    log    ${d['china']}
+    Run Keyword If    $x=='10'    log    ok
+    Run Keyword If    $y==10    log    pok
+    Should Be Equal    ${x}    10
+    Set Global Variable    ${xx}    abcc    #跨测试用例传递变量
+    [Teardown]
+
+Case-02
+    ${x}    Set Variable    ${3}
+    ${y}    Evaluate    $x+1
+    ${x}    Get Time    year month day
+    log    ${x}
+    log    ${CURDIR}${/}mtres.txt    #内置的变量
+    log    ${TEST_NAME}
+    log    %{PATH}
+    ${x}    Read Csv File To List    testdata${/}data.csv
+    log    ${x[2][0]}
+
+Case-Mylib
+    ${x}    Get Curdir
+    log    ${CASE}
+    log    ${MODULE}
+    Fail
+
+Case-date
+    ${x}    Evaluate    (datetime.date.today()+datetime.timedelta(days=1)).strftime("%d-%B-%Y")    datetime
+    ${x}    Get Current Date    increment=5 days    result_format=%d-%B-%Y
+    ${date} =    Convert Date    5.28.2014 12:05    exclude_millis=yes    date_format=%m.%d.%Y %H:%M

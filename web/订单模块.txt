@@ -1,0 +1,165 @@
+*** Settings ***
+Suite Setup       setup    order_item
+Suite Teardown    teardown
+Test Setup        case_setup
+Test Teardown     case_teardown
+Library           SeleniumLibrary
+Library           OperatingSystem
+Library           DatabaseLibrary
+Resource          res.txt
+Library           AutoItLibrary
+Library           DebugLibrary
+Variables         lib/vars.py
+Library           DateTime
+
+*** Test Cases ***
+Case-01
+    [Documentation]    xxx购物车主要功能
+    [Tags]    high
+    ${x}    Row Count    select * from order_item where name='ipad' and quantity=123;
+    ${y}    Evaluate    str($x+1)
+    log    2，点击自动化测试课程
+    Click Element    link=自动化测试课程    #link定位符
+    Click Element    partial link=接口    #parital link定位符
+    Click Link    自动化测试课程
+    log    3，输入产品名称及数量
+    Wait Until Element Is Visible    id=pay    # 显式等待网页下载成功
+    Input Text    id=ProductName    ipad
+    Input Text    name=Quantity    123
+    log    4，点击提交
+    Click Element    id=submitBtn
+    log    5，确认提交成功
+    log    5.1，确认前端提示信息正确
+    Wait Until Page Contains    你购买了ipad，一共123件    # 等待后台处理15s，检查提示信息
+    Page Should Contain    你购买了ipad，一共123件    # 检查方式1
+    ${x}    Get Text    id=msg    #检查方式2
+    Should Be Equal    ${x}    你购买了ipad，一共123件。
+    log    5.2，确认前端购物车信息正确
+    Select Frame    fra    #进入iframe/frame
+    Select From List By Label    buy    产品:ipad,数量:123    #处理select下拉列表
+    log    5.3，确认后台数据库订单表信息正确
+    Comment    comment    PAUSE    #打断点
+    Wait Until Keyword Succeeds    30    1    Check If Exists In Database    select * from order_item where name='ipad' and quantity=123;    #显示等待数据库处理成功
+    Row Count Is Equal To X    select * from order_item where name='ipad' and quantity=123;    ${y}    #确认有且只有1行
+    Comment    ${x}    Row Count    select * from order_item where name='ipad' and quantity=123;
+    log    6，点击付款
+    Unselect Frame    #退出iframe
+    Click Button    付款
+    Handle Alert    ACCEPT    #处理弹出的alert对话框
+    log    7，切换到付款窗口
+    sleep    2    #强制等待新窗口弹出
+    ${x}    Get Window Handles
+    Select Window    付款    #选择title是付款的window
+    Select Window    ${x[-1]}    #处理没有title的window
+    log    8,输入银行卡号，完成付款
+    Input Text    cardno    111111111
+    Click Button    付款
+    Handle Alert
+    Execute Sql String    DELETE FROM order_item where name='ipad' and quantity=123;    #恢复数据库环境
+
+Case-02
+    [Documentation]    xxx购物车主要功能
+    [Tags]    high
+    log    2，点击自动化测试课程
+    Click Element    css=body > div.container > div.masthead > div > div > div > ul > li:nth-child(3) > a    #css选择器定位符
+    log    3，输入产品名称及数量
+    Input Text    css=#ProductName    ipad
+    Input Text    xpath=//*[@name="Quantity"]    123    #xpath定位符
+    log    4，点击提交
+    Click Element    id=submitBtn
+    log    5，确认提交成功
+    log    5.1，确认前端提示信息正确
+    Wait Until Page Contains    你购买了ipad，一共123件    # 检查方式1
+    ${x}    Get Text    id=msg    #检查方式2
+    Should Be Equal    ${x}    你购买了ipad，一共123件。
+    log    1,明天
+    ${x}    Get Current Date    increment=1 day    result_format=%d-%B-%Y
+    Execute Javascript    $('input[datepicker-popup]').attr('readonly',false)    #执行js
+    Input Text    css=[datepicker-popup]    ${x}    #输入日期
+    log    2,再加5天后
+    ${x}    Get Current Date    increment=5 days    result_format=%d-%B-%Y
+    Execute Javascript    $('input[datepicker-popup]').val('${x}')
+    log    点击最后一天
+    Click Element    css=[datepicker-popup]    #日期控件
+    Click Element    css=table[show-weeks]>tbody>tr:last-child>td:last-child
+
+Case-03
+    [Template]    tpl_order
+    ipad    123
+    苹果    321
+
+Case-04
+    [Documentation]    xxx购物车主要功能
+    [Tags]    high
+    log    2，点击自动化测试课程
+    Click Element    css=body > div.container > div.masthead > div > div > div > ul > li:nth-child(3) > a    #css选择器定位符
+    log    3，输入产品名称及数量
+    Comment    Execute Javascript    $("#ProductName").val("ipad")
+    Comment    Execute Javascript    document.getElementsByName("Quantity")[0].value="123"
+    Input Text    css=#ProductName    ipad
+    Input Text    xpath=//*[@name="Quantity"]    123
+    log    4，点击提交
+    Click Element    id=submitBtn
+    log    5，确认提交成功
+    log    5.1，确认前端提示信息正确
+    Wait Until Page Contains    你购买了ipad，一共123件    # 检查方式1
+    ${x}    Get Text    id=msg    #检查方式2
+    Should Be Equal    ${x}    你购买了ipad，一共123件。
+
+Case-05
+    log    2，点击自动化测试课程
+    Click Element    link=自动化测试课程
+    Wait Until Element Is Visible    link=上传下载demo页面
+    Click Link    link=上传下载demo页面
+    Wait Until Element Is Visible    id=file
+    Click Element    id=file
+    Win Wait    打开    \    20
+    Win Activate    打开
+    log    ${CURDIR}
+    Control Set Text    \    \    Edit1    ${CURDIR}${/}res.txt
+    Control Click    \    \    Button1
+    sleep    3
+    [Teardown]    go to    http://${IP}/testerq
+
+Case-06
+    [Documentation]    xxx购物车主要功能
+    [Tags]    high
+    log    2，点击自动化测试课程
+    Click Element    jquery=a:contains("自动化测试课程")    #css=a[href="#/downloads"]    css=body > div.container > div.masthead > div > div > div > ul > li.active > a
+    log    3，输入产品名称及数量
+    Input Text    jquery=#ProductName    ipad
+    Input Text    jquery=[name="Quantity"]    123
+    log    4，点击提交
+    Click Element    id=submitBtn
+    log    5，确认提交成功
+    log    5.1，确认前端提示信息正确
+    Wait Until Page Contains    你购买了ipad，一共123件    # 检查方式1
+    ${x}    Get Text    id=msg    #检查方式2
+    Should Be Equal    ${x}    你购买了ipad，一共123件。
+
+Case-07
+    [Template]    tpl_order
+    : FOR    ${i}    IN    @{DATA_ORDER_CASE_03}
+    \    ${i[0]}    ${i[1]}
+
+*** Keywords ***
+case_setup
+    Execute Sql String    DELETE FROM order_item;
+
+case_teardown
+    Select Window
+
+tpl_order
+    [Arguments]    ${pname}    ${quan}
+    log    2，点击自动化测试课程
+    Click Element    css=body > div.container > div.masthead > div > div > div > ul > li:nth-child(3) > a    #css选择器定位符
+    log    3，输入产品名称及数量
+    Input Text    css=#ProductName    ${pname}
+    Input Text    xpath=//*[@name="Quantity"]    ${quan}    #xpath定位符
+    log    4，点击提交
+    Click Element    id=submitBtn
+    log    5，确认提交成功
+    log    5.1，确认前端提示信息正确
+    Page Should Contain    你购买了${pname}，一共${quan}件    # 检查方式1
+    ${x}    Get Text    id=msg    #检查方式2
+    Should Be Equal    ${x}    你购买了${pname}，一共${quan}件。
