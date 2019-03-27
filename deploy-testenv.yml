@@ -1,0 +1,30 @@
+version: "3"
+services:
+  tomcat:
+    container_name: tomcat
+    image: ${REPO:-docker.io}/tomcat:8.5-jre8-alpine
+    ports:
+      - "80:8080"
+    restart: always
+    links:
+      - "mysql"
+    volumes:
+      - "tomcat:/usr/local/tomcat/webapps"  
+  mysql:
+    container_name: mysql
+    image: ${REPO:-docker.io}/mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=testerq"
+      - "character-set-server=utf8mb4"
+      - "collation-server=utf8mb4_unicode_ci"
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - "mysql:/var/lib/mysql"  
+      - "/root/mysql/init:/docker-entrypoint-initdb.d"
+      - "/root/mysql/conf:/etc/mysql/conf.d"
+                    
+volumes:
+  tomcat:
+  mysql:
