@@ -10,15 +10,15 @@
 # Usage
 ## install docker & docker-compose on CentOS7
 ```
-# yum install-docker
+# yum install -y docker
 # curl -L https://github.com/docker/compose/releases/download/1.24.0-rc3/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
 # chmod +x /usr/bin/docker-compose
 ```
 
 ## Run test Server with docker-compose:
 ```
-# git clone https://github.com/ravihuang/testerqtests.git
-# cp -r testerqtests/mysql /root
+# git clone <this project>
+# cp -r <this project>/mysql /root
 # chcon -Rt svirt_sandbox_file_t /root/mysql/
 # docker-compose -f  deploy-testenv.yml up -d
 # docker cp testerq.war tomcat:/usr/local/tomcat/webapps
