@@ -2,6 +2,7 @@
 - Centos7
 - Tomcat8
 - Mysql5.7
+- Springboot
 - Robotframework
 - Docker
 - Docker-compose
