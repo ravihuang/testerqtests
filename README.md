@@ -27,4 +27,4 @@
 
 
 # 扫一扫关注微信公众号
-<img src="https://raw.githubusercontent.com/ravihuang/pytestprj/master/conf/qrcode.jpg" width="349px" style="border: 1px solid black;" />
+<img src="https://github.com/ravihuang/pytestprj/raw/master/conf/qrcode.jpg" width="349px" style="border: 1px solid black;" />
