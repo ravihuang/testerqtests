@@ -18,7 +18,7 @@
 ## Run test Server with docker-compose:
 ```
 # git clone <this project>
-# cp -r <this project>/mysql /root
+# cp -r <this project>/conf/test/mysql /root
 # chcon -Rt svirt_sandbox_file_t /root/mysql/
 # docker-compose -f  deploy-testenv.yml up -d
 # docker cp testerq.war tomcat:/usr/local/tomcat/webapps
