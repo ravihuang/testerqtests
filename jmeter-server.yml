@@ -9,5 +9,5 @@ services:
     restart: always
     network_mode: host
     volumes:
-      - "https.p12:/conf/https.p12"  
+      - "testerq.p12:/conf/https.p12"  
 #    command: jmeter-server -Jserver.rmi.localport=60000 -Djava.rmi.server.hostname=jmeter.server -Djavax.net.ssl.keyStorePassword=changeit
